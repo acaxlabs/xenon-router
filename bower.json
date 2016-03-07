@@ -1,0 +1,36 @@
+﻿{
+  "name": "xenon-router",
+  "version": "1.0",
+  "description": "Creates a show hide for child elements based on url hash",
+  "authors": [
+    "ACA[X]Labs"
+  ],
+  "keywords": [
+    "web-components",
+    "polymer",
+    "router"
+  ],
+  "main": [
+    "xenon-router.html"
+  ],
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BenefitGeek/XenonRouter.git"
+  },
+  "license": "https://github.com/BenefitGeek/XenonRouter/blob/master/LICENSE",
+  "homepage": "https://github.com/BenefitGeek/XenonRouter",
+  "ignore": [],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.2.0"
+  },
+  "_release": "1.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.0"
+  },
+  "_source": "https://github.com/BenefitGeek/XenonRouter.git",
+  "_target": "^1.0",
+  "_originalSource": "BenefitGeek/XenonRouter",
+  "_direct": true
+}

@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Xenon Router Demo</title>
+    <link rel="import" href="../xenon-router.html"/>
+</head>
+<body>
+    <template is="dom-bind">
+
+        <xenon-router>
+
+            <div id="one">
+                <h2>page one</h2>
+                <div><a href="#two">next page</a></div>
+            </div>
+            <div id="two">
+                <h2>page two</h2>
+                <div><a href="#one">previous page</a></div>
+            </div>
+
+        </xenon-router>
+
+    </template>
+</body>
+</html>

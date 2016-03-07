@@ -1,0 +1,86 @@
+﻿<link rel="import" href="../polymer/polymer.html"/>
+
+<!--
+
+`<xenon-router>` provides simple page routing with the url hashbang and standard browser navigation.
+
+Example:
+
+    <xenon-router>
+        <div id="pageone">
+            <h1>the first page</h1>
+            <a href="#pagetwo">next</a>
+        </div>
+        <div id="pagetwo"> 
+            <h1>the second page</h1>
+            <a href="#pageone">prev</a>
+        </div>
+    </xenon-router>
+
+@group Xenon Elements
+@element xenon-router
+@demo demo/index.html
+-->
+
+<dom-module id="xenon-router">
+    <template>
+        <style>
+            /*::content .backg { animation: fadeinx 1.0s ease 0.2s both; }*/
+
+            @keyframes fadeinx {
+                from { opacity: 0.0; }
+                to   { opacity: 1.0; }
+            }
+        </style>
+        <content></content>
+    </template>
+    <script>
+        Polymer({
+            is: "xenon-router",
+
+            ready: function () {
+                var that = this; 
+                window.addEventListener("hashchange", function (e) { that.navigate(window.location.hash); });
+                this.navigate(window.location.hash);
+
+                var all = this.getEffectiveChildren();
+                for (var i = 0; i < all.length; i++) {
+                    this.toggleClass("backg", true, all[i]);
+                }
+            },
+
+            properties: {
+                /* The current value of the hashbang in the url. This value will include the hash. ex. "#pagetwo" */
+                hash: { type: String, observer: "_showChild" },
+
+                /* Enable to show all routes always. All children of xenon-router will be visible. */
+                debug: { type: Boolean, value: false }
+            },
+
+            /* Call this method to display the required child. For example: 
+            *  `this.$.myrouter.navigate("#pagetwo");`
+            */
+            navigate: function (hash) {
+                console.log(hash);
+                this.hash = hash;
+            },
+
+            /* Show the correct child based on the value of this.hash */
+            _showChild: function () {
+                var all = this.getEffectiveChildren();
+                if (!this.debug) for (var i = 0; i < all.length; i++) {
+                    all[i].hidden = true;
+                }
+                if (this.hash == '') {
+                    all[0].hidden = false;
+                } else {
+                    var ele = this.queryEffectiveChildren(this.hash);
+                    if (ele != undefined) {
+                        ele.hidden = false;
+                        window.scrollTo(0, 0);
+                    }
+                }
+           }
+        });
+    </script>
+</dom-module>
