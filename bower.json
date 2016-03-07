@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "xenon-router",
   "version": "1.0",
   "description": "Creates a show hide for child elements based on url hash",
