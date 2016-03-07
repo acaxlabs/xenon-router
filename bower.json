@@ -10,15 +10,13 @@
     "polymer",
     "router"
   ],
-  "main": [
-    "xenon-router.html"
-  ],
+  "main": "xenon-router.html",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/BenefitGeek/XenonRouter.git"
+    "url": "github.com/BenefitGeek/XenonRouter.git"
   },
-  "license": "https://github.com/BenefitGeek/XenonRouter/blob/master/LICENSE",
+  "license": "https://github.com/BenefitGeek/XenonRouter/blob/master/LICENSE.txt",
   "homepage": "https://github.com/BenefitGeek/XenonRouter",
   "ignore": [],
   "dependencies": {
@@ -28,9 +26,5 @@
   "_resolution": {
     "type": "version",
     "tag": "v1.0"
-  },
-  "_source": "https://github.com/BenefitGeek/XenonRouter.git",
-  "_target": "^1.0",
-  "_originalSource": "BenefitGeek/XenonRouter",
-  "_direct": true
+  }
 }
