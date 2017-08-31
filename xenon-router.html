@@ -1,4 +1,4 @@
-﻿<link rel="import" href="../polymer/polymer.html"/>
+<link rel="import" href="../polymer/polymer.html"/>
 
 <!--
 
@@ -41,15 +41,18 @@ Example:
             ready: function () {
                 var that = this; 
                 window.addEventListener("hashchange", function (e) { that.navigate(window.location.hash); });
-                this.navigate(window.location.hash);
-
                 var all = this.getEffectiveChildren();
                 for (var i = 0; i < all.length; i++) {
                     this.toggleClass("backg", true, all[i]);
+                    this._hashes.push("#" + all[i].id);
                 }
+                this.hash = (window.location.hash == "" || window.location.hash == null || window.location.hash == undefined) ? this._hashes[0] : window.location.hash;
             },
 
             properties: {
+                /* Collection of all available ids */
+                _hashes: { type: Array, value: [] },
+
                 /* The current value of the hashbang in the url. This value will include the hash. ex. "#pagetwo" */
                 hash: { type: String, observer: "_showChild" },
 
@@ -62,6 +65,11 @@ Example:
             */
             navigate: function (hash) {
                 this.hash = hash;
+            },
+
+            selectNext: function() {
+                var index = this._hashes.indexOf(this.hash);
+                this.set("hash", this._hashes[index + 1]);
             },
 
             /* Show the correct child based on the value of this.hash */
