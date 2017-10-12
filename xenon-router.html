@@ -69,7 +69,7 @@ Example:
 
             selectNext: function() {
                 var index = this._hashes.indexOf(this.hash);
-                this.set("hash", this._hashes[index + 1]);
+                window.location = this._hashes[index + 1];
             },
 
             /* Show the correct child based on the value of this.hash */
