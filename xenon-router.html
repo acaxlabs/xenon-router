@@ -68,8 +68,11 @@ Example:
             },
 
             selectNext: function() {
-                var index = this._hashes.indexOf(this.hash);
-                window.location = this._hashes[index + 1];
+                var index = this._hashes.indexOf(this.hash) + 1;
+                if (index == this._hashes.length) return false; 
+                var newHash = this._hashes[index];
+                window.location = newHash;
+                return true;
             },
 
             /* Show the correct child based on the value of this.hash */
@@ -77,13 +80,21 @@ Example:
                 var all = this.getEffectiveChildren();
                 if (!this.debug) for (var i = 0; i < all.length; i++) {
                     all[i].hidden = true;
-                }
+                } 
+                // find the element to unhide
+                var ele; 
                 if (this.hash == '') {
-                    all[0].hidden = false;
+                    ele = all[0];
                 } else {
-                    var ele = this.queryEffectiveChildren(this.hash);
-                    if (ele != undefined) {
-                        ele.hidden = false;
+                    ele = this.queryEffectiveChildren(this.hash);
+                }
+                // unhide the element
+                if (ele != undefined) {
+                    ele.hidden = false;
+                    try {
+                        ele.onRouterShow();
+                    } catch (err) {
+                        // do nothing
                     }
                 }
            }
