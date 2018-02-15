@@ -72,6 +72,8 @@ Example:
                 if (index == this._hashes.length) return false; 
                 var newHash = this._hashes[index];
                 window.location = newHash;
+                window.scrollTo(0, 0);
+                this.fire("xenon-scroll-top");
                 return true;
             },
 
@@ -97,6 +99,8 @@ Example:
                         // do nothing
                     }
                 }
+                window.scrollTo(0, 0);
+                this.fire("xenon-scroll-top");
            }
         });
     </script>
