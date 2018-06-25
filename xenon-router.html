@@ -66,15 +66,6 @@ Example:
             navigate: function (hash) {
                 this.hash = hash;
             },
-            selectPrevious: function () {
-                var index = this._hashes.indexOf(this.hash) - 1;
-                if (index < 0) return false;
-                var newHash = this._hashes[index];
-                window.location = newHash;
-                window.scrollTo(0, 0);
-                this.fire("xenon-scroll-top");
-                return true;
-            },
 
             selectNext: function() {
                 var index = this._hashes.indexOf(this.hash) + 1;
@@ -101,11 +92,17 @@ Example:
                 }
                 // unhide the element
                 if (ele != undefined) {
+                    var shouldShow;
+                    if (typeof (ele.onShouldShow) === "function") {
+                        shouldShow = ele.onShouldShow();
+                        if (!shouldShow) {
+                            var index = this._hashes.indexOf(this.hash) + 1;
+                            this.hash = this._hashes[index];
+                        }
+                    }
                     ele.hidden = false;
-                    try {
+                    if (typeof (ele.onRouterShow) === "function") {
                         ele.onRouterShow();
-                    } catch (err) {
-                        // do nothing
                     }
                 }
                 window.scrollTo(0, 0);
