@@ -96,8 +96,7 @@ Example:
                     if (typeof (ele.onShouldShow) === "function") {
                         shouldShow = ele.onShouldShow();
                         if (!shouldShow) {
-                            var index = this._hashes.indexOf(this.hash) + 1;
-                            this.hash = this._hashes[index];
+                            this.selectNext();
                         }
                     }
                     if (shouldShow) {
