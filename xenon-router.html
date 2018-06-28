@@ -1,4 +1,4 @@
-<link rel="import" href="../polymer/polymer.html"/>
+<link rel="import" href="../polymer/polymer.html" />
 
 <!--
 
@@ -11,7 +11,7 @@ Example:
             <h1>the first page</h1>
             <a href="#pagetwo">next</a>
         </div>
-        <div id="pagetwo"> 
+        <div id="pagetwo">
             <h1>the second page</h1>
             <a href="#pageone">prev</a>
         </div>
@@ -29,7 +29,7 @@ Example:
 
             @keyframes fadeinx {
                 from { opacity: 0.0; }
-                to   { opacity: 1.0; }
+                to { opacity: 1.0; }
             }
         </style>
         <content></content>
@@ -39,7 +39,7 @@ Example:
             is: "xenon-router",
 
             ready: function () {
-                var that = this; 
+                var that = this;
                 window.addEventListener("hashchange", function (e) { that.navigate(window.location.hash); });
                 var all = this.getEffectiveChildren();
                 for (var i = 0; i < all.length; i++) {
@@ -60,16 +60,16 @@ Example:
                 debug: { type: Boolean, value: false }
             },
 
-            /* Call this method to display the required child. For example: 
+            /* Call this method to display the required child. For example:
             *  `this.$.myrouter.navigate("#pagetwo");`
             */
             navigate: function (hash) {
                 this.hash = hash;
             },
 
-            selectNext: function() {
+            selectNext: function () {
                 var index = this._hashes.indexOf(this.hash) + 1;
-                if (index == this._hashes.length) return false; 
+                if (index == this._hashes.length) return false;
                 var newHash = this._hashes[index];
                 window.location = newHash;
                 window.scrollTo(0, 0);
@@ -82,9 +82,9 @@ Example:
                 var all = this.getEffectiveChildren();
                 if (!this.debug) for (var i = 0; i < all.length; i++) {
                     all[i].hidden = true;
-                } 
+                }
                 // find the element to unhide
-                var ele; 
+                var ele;
                 if (this.hash == '') {
                     ele = all[0];
                 } else {
@@ -99,17 +99,16 @@ Example:
                             var index = this._hashes.indexOf(this.hash) + 1;
                             this.hash = this._hashes[index];
                         }
-                        else{
-                            ele.hidden = false;
-                            if (typeof (ele.onRouterShow) === "function") 
-                                ele.onRouterShow();
-                        }
                     }
-                    
+                    if (shouldShow) {
+                        ele.hidden = false;
+                        if (typeof (ele.onRouterShow) === "function")
+                            ele.onRouterShow();
+                    }
                 }
                 window.scrollTo(0, 0);
                 this.fire("xenon-scroll-top");
-           }
+            }
         });
     </script>
 </dom-module>
