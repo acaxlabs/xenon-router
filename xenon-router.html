@@ -98,13 +98,14 @@ Example:
                         if (!shouldShow) {
                             var index = this._hashes.indexOf(this.hash) + 1;
                             this.hash = this._hashes[index];
-                            return;
+                        }
+                        else{
+                            ele.hidden = false;
+                            if (typeof (ele.onRouterShow) === "function") 
+                                ele.onRouterShow();
                         }
                     }
-                    ele.hidden = false;
-                    if (typeof (ele.onRouterShow) === "function") {
-                        ele.onRouterShow();
-                    }
+                    
                 }
                 window.scrollTo(0, 0);
                 this.fire("xenon-scroll-top");
