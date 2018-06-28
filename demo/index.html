@@ -1,25 +1,64 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Xenon Router Demo</title>
     <link rel="import" href="../xenon-router.html"/>
 </head>
 <body>
-    <template is="dom-bind">
+<link rel="import" href="../polymer/polymer.html" />
+<dom-module id="hide-ele">
+    <template>
+        <h2>page one</h2>
+        <div><a href="#two">next page</a></div>
+    </template>
+    <script>
+        Polymer({
+            is: "hide-ele",
+            onShouldShow: function() {
+                return false
+            }
+        });
+    </script>
+</dom-module>
 
+<dom-module id="alert-ele">
+    <template>
+        <h2>page two</h2>
+        <div><a href="#one">previous page</a></div>
+        <div><a href="#three">next page</a></div>
+    </template>
+    <script>
+        Polymer({
+            is: "alert-ele",
+            onRouterShow: function() {
+                alert("hello world");
+            }
+        });
+    </script>
+</dom-module>
+
+<dom-module id="my-dom-module">
+    <template>
         <xenon-router>
 
-            <div id="one">
-                <h2>page one</h2>
-                <div><a href="#two">next page</a></div>
+            <hide-ele id="one">  </hide-ele>
+            <alert-ele id="two">
+                
+            </alert-ele>
+            <div id="three">
+                <h2>page three</h2>
+                <div><a href="#two">previous page</a></div>
             </div>
-            <div id="two">
-                <h2>page two</h2>
-                <div><a href="#one">previous page</a></div>
-            </div>
-
         </xenon-router>
-
     </template>
+    <script>
+        Polymer({
+            is: "my-dom-module",
+            
+        });
+    </script>
+</dom-module>
+<my-dom-module></my-dom-module>
+
 </body>
 </html>
