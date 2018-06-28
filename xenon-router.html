@@ -92,7 +92,7 @@ Example:
                 }
                 // unhide the element
                 if (ele != undefined) {
-                    var shouldShow;
+                    var shouldShow = true;
                     if (typeof (ele.onShouldShow) === "function") {
                         shouldShow = ele.onShouldShow();
                         if (!shouldShow) {
