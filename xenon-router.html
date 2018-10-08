@@ -54,7 +54,10 @@ Example:
                 _hashes: { type: Array, value: [] },
 
                 /* The current value of the hashbang in the url. This value will include the hash. ex. "#pagetwo" */
-                hash: { type: String, observer: "_showChild" },
+                hash: { type: String, observer: "_showChild", notify:true },
+
+                lastHash: { type: String },
+
 
                 /* Enable to show all routes always. All children of xenon-router will be visible. */
                 debug: { type: Boolean, value: false }
@@ -67,47 +70,118 @@ Example:
                 this.hash = hash;
             },
 
-            selectNext: function () {
-                var index = this._hashes.indexOf(this.hash) + 1;
+            selectNext: function (hash = null) {
+                if(hash == null) hash = this.hash;
+
+                hash = hash == null ? null: hash[0] === '#'? hash : '#'+hash;
+                var currentElement = this.queryEffectiveChildren(hash);
+                if (typeof (currentElement.onRouterLeave) === "function") {
+                    currentElement.onRouterLeave();
+                }
+                var index = this._hashes.indexOf(hash) + 1;
                 if (index == this._hashes.length) return false;
                 var newHash = this._hashes[index];
-                window.location = newHash;
-                window.scrollTo(0, 0);
-                this.fire("xenon-scroll-top");
-                return true;
-            },
 
+                var ele = this.queryEffectiveChildren(newHash);
+                if(ele == null) return false;
+                if(this.testElementsOnShouldShow(ele))
+                {
+                    window.location = newHash;
+                    window.scrollTo(0, 0);
+                    this.fire("xenon-scroll-top");
+                    return true;
+                }
+                else
+                {
+                    return this.selectNext(newHash);
+                }
+
+            },
+            selectPrevious: function (hash = null) {
+                if(hash == null) hash = this.hash;
+                hash = hash == null ? null: hash[0] === '#'? hash : '#'+hash;
+                var currentElement = this.queryEffectiveChildren(hash);
+                if (typeof (currentElement.onRouterLeave) === "function") {
+                    currentElement.onRouterLeave();
+                }
+                var index = this._hashes.indexOf(hash) - 1;
+                if (index < 0) return false;
+                var newHash = this._hashes[index];
+                
+                let ele = this.queryEffectiveChildren(newHash);
+                if(ele == null) return false;
+                if(this.testElementsOnShouldShow(ele))
+                {
+                    window.location = newHash;
+                    window.scrollTo(0, 0);
+                    this.fire("xenon-scroll-top");
+                    return true;
+                }
+                else
+                {
+                    return this.selectPrevious(newHash);
+                }
+
+            },
             /* Show the correct child based on the value of this.hash */
-            _showChild: function () {
+            _showChild: function (hash, oldHash) {
+               // this.set("lastHash", oldHash);
+                if(hash == null) 
+                { 
+                    this.set('hash', this._hashes[0]);
+                    return;
+                }
                 var all = this.getEffectiveChildren();
                 if (!this.debug) for (var i = 0; i < all.length; i++) {
                     all[i].hidden = true;
                 }
                 // find the element to unhide
                 var ele;
-                if (this.hash == '') {
+                if (this.hash == '') 
+                {
                     ele = all[0];
-                } else {
+                } else 
+                {
                     ele = this.queryEffectiveChildren(this.hash);
                 }
+
+                let diff = this._hashes.indexOf(hash) - this._hashes.indexOf(oldHash);
                 // unhide the element
                 if (ele != undefined) {
-                    var shouldShow = true;
-                    if (typeof (ele.onShouldShow) === "function") {
-                        shouldShow = ele.onShouldShow();
-                        if (!shouldShow) {
-                            this.selectNext();
-                        }
+                    var shouldShow = this.testElementsOnShouldShow(ele);
+  
+                    if (diff > 0 && !shouldShow) 
+                    {
+                        this.selectNext();
                     }
-                    if (shouldShow) {
+                    else  
+                    {
                         ele.hidden = false;
                         if (typeof (ele.onRouterShow) === "function")
+                        {
                             ele.onRouterShow();
+                        }
+                        this.fire("route", hash);
                     }
                 }
                 window.scrollTo(0, 0);
                 this.fire("xenon-scroll-top");
+            },
+
+
+            testElementsOnShouldShow: function(element)
+            {
+                if(element == null) return false;
+                if (typeof (element.onShouldShow) === "function") 
+                {
+                    return element.onShouldShow();
+                }
+                else
+                {
+                    return true;
+                }
             }
+
         });
     </script>
 </dom-module>
