@@ -1,7 +1,6 @@
 <link rel="import" href="../polymer/polymer.html" />
 
 <!--
-
 `<xenon-router>` provides simple page routing with the url hashbang and standard browser navigation.
 
 Example:
@@ -60,8 +59,6 @@ Example:
                 "_waitObjectIsReady(waitFor)"
             ],
             ready: function () {
-                var that = this;
-                console.log("waitFor in ready", this.waitFor);
                 var all = this.getEffectiveChildren();
                 for (var i = 0; i < all.length; i++) {
                     this.toggleClass("backg", true, all[i]);
@@ -73,6 +70,7 @@ Example:
              },
              // add a hash listener and set the current hash which will show the first view
             _init: function() {
+                var that = this;
                 window.addEventListener("hashchange", function (e) { that.navigate(window.location.hash); });
                 this.hash = (window.location.hash == "" || window.location.hash == null || window.location.hash == undefined) ? this._hashes[0] : window.location.hash;
             },
