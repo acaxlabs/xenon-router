@@ -37,18 +37,6 @@ Example:
     <script>
         Polymer({
             is: "xenon-router",
-
-            ready: function () {
-                var that = this;
-                window.addEventListener("hashchange", function (e) { that.navigate(window.location.hash); });
-                var all = this.getEffectiveChildren();
-                for (var i = 0; i < all.length; i++) {
-                    this.toggleClass("backg", true, all[i]);
-                    this._hashes.push("#" + all[i].id);
-                }
-                this.hash = (window.location.hash == "" || window.location.hash == null || window.location.hash == undefined) ? this._hashes[0] : window.location.hash;
-            },
-
             properties: {
                 /* Collection of all available ids */
                 _hashes: { type: Array, value: [] },
@@ -56,13 +44,42 @@ Example:
                 /* The current value of the hashbang in the url. This value will include the hash. ex. "#pagetwo" */
                 hash: { type: String, observer: "_showChild", notify:true },
 
-                lastHash: { type: String },
+                /* Determines that we should wait for an object to become defined before init */
+                wait: { type:Boolean, value: false },
 
+                /* Specifies an object to become defined before views start to show */
+                waitFor: { type:Object },
+
+                /* the hash we were on before this one */
+                lastHash: { type: String },
 
                 /* Enable to show all routes always. All children of xenon-router will be visible. */
                 debug: { type: Boolean, value: false }
             },
-
+            observers: [
+                "_waitObjectIsReady(waitFor)"
+            ],
+            ready: function () {
+                var that = this;
+                console.log("waitFor in ready", this.waitFor);
+                var all = this.getEffectiveChildren();
+                for (var i = 0; i < all.length; i++) {
+                    this.toggleClass("backg", true, all[i]);
+                    this._hashes.push("#" + all[i].id);
+                    all[i].hidden = true;
+                }
+                // check to see if we're supposed to wait for an object
+                if(!this.wait) this._init(); 
+             },
+             // add a hash listener and set the current hash which will show the first view
+            _init: function() {
+                window.addEventListener("hashchange", function (e) { that.navigate(window.location.hash); });
+                this.hash = (window.location.hash == "" || window.location.hash == null || window.location.hash == undefined) ? this._hashes[0] : window.location.hash;
+            },
+            // When the wait object becomes defined, go ahead and show a view 
+            _waitObjectIsReady: function(o) {
+                this._init(); 
+            },
             /* Call this method to display the required child. For example:
             *  `this.$.myrouter.navigate("#pagetwo");`
             */
