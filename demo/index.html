@@ -23,6 +23,7 @@
 <dom-module id="alert-ele">
     <template>
         <h2>page two</h2>
+        <div>[[message]]</div>
         <div><a href="#one">previous page</a></div>
         <div><a href="#three">next page</a></div>
     </template>
@@ -30,7 +31,7 @@
         Polymer({
             is: "alert-ele",
             onRouterShow: function() {
-                alert("hello world");
+                this.message = "onRouterShow ran!";
             }
         });
     </script>
@@ -38,7 +39,7 @@
 
 <dom-module id="my-dom-module">
     <template>
-        <xenon-router>
+        <xenon-router wait wait-for="{{objWaitingFor}}">
 
             <hide-ele id="one">  </hide-ele>
             <alert-ele id="two">
@@ -49,11 +50,14 @@
                 <div><a href="#two">previous page</a></div>
             </div>
         </xenon-router>
+        <button on-click="_dontWait">set wait for obj</button>
     </template>
     <script>
         Polymer({
             is: "my-dom-module",
-            
+            _dontWait: function() {
+                this.objWaitingFor = "don't wait any more";
+            }
         });
     </script>
 </dom-module>
