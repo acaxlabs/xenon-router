@@ -1,5 +1,4 @@
 <link rel="import" href="../polymer/polymer.html" />
-
 <!--
 `<xenon-router>` provides simple page routing with the url hashbang and standard browser navigation.
 
@@ -20,7 +19,6 @@ Example:
 @element xenon-router
 @demo demo/index.html
 -->
-
 <dom-module id="xenon-router">
     <template>
         <style>
@@ -53,7 +51,9 @@ Example:
                 lastHash: { type: String },
 
                 /* Enable to show all routes always. All children of xenon-router will be visible. */
-                debug: { type: Boolean, value: false }
+                debug: { type: Boolean, value: false },
+
+                index: { type: Number, notify: true }
             },
             observers: [
                 "_waitObjectIsReady(waitFor)"
@@ -96,7 +96,7 @@ Example:
             selectNext: function (hash = null) {
                 if (hash == null) hash = this.hash;
 
-                hash = hash == null ? null: hash[0] === "#" ? hash : "#" + hash;
+                hash = hash == null ? null : hash[0] === "#" ? hash : "#" + hash;
 
                 var index = this._hashes.indexOf(hash) + 1;
                 if (index == this._hashes.length) return false;
@@ -115,7 +115,7 @@ Example:
             },
             selectPrevious: function (hash = null) {
                 if (hash == null) hash = this.hash;
-                hash = hash == null ? null: hash[0] === "#" ? hash : "#" + hash;
+                hash = hash == null ? null : hash[0] === "#" ? hash : "#" + hash;
 
                 var index = this._hashes.indexOf(hash) - 1;
                 if (index < 0) return false;
@@ -136,6 +136,7 @@ Example:
             _showChild: function (hash, oldHash) {
                 if (hash == null) {
                     this.set("hash", this._hashes[0]);
+                    this.set("index", 0);
                     return;
                 }
                 var all = this.getEffectiveChildren();
@@ -175,6 +176,7 @@ Example:
                 }
                 window.scrollTo(0, 0);
                 this.fire("xenon-scroll-top");
+                this.set("index", this._hashes.indexOf(hash));
             },
 
 
