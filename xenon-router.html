@@ -41,13 +41,13 @@ Example:
                 _hashes: { type: Array, value: [] },
 
                 /* The current value of the hashbang in the url. This value will include the hash. ex. "#pagetwo" */
-                hash: { type: String, observer: "_showChild", notify:true },
+                hash: { type: String, observer: "_showChild", notify: true },
 
                 /* Determines that we should wait for an object to become defined before init */
-                wait: { type:Boolean, value: false },
+                wait: { type: Boolean, value: false },
 
                 /* Specifies an object to become defined before views start to show */
-                waitFor: { type:Object },
+                waitFor: { type: Object },
 
                 /* the hash we were on before this one */
                 lastHash: { type: String },
@@ -66,19 +66,25 @@ Example:
                     all[i].hidden = true;
                 }
                 // check to see if we're supposed to wait for an object
-                if(!this.wait) {
-                    this._init(); 
+                if (!this.wait) {
+                    this._init();
                 }
-             },
-             // add a hash listener and set the current hash which will show the first view
-            _init: function() {
-                var that = this;
-                window.addEventListener("hashchange", function (e) { that.navigate(window.location.hash); });
-                this.hash = (window.location.hash == "" || window.location.hash == null || window.location.hash == undefined) ? this._hashes[0] : window.location.hash;
             },
-            // When the wait object becomes defined, go ahead and show a view 
-            _waitObjectIsReady: function(o) {
-                this._init(); 
+            // add a hash listener and set the current hash which will show the first view
+            _init: function () {
+                var that = this;
+                window.addEventListener("hashchange", function (e) {
+                    that.navigate(that._getWindowHash());
+                });
+
+                this.hash = this._getWindowHash();
+            },
+            _getWindowHash: function () {
+                return window.location.hash ? window.location.hash : this._hashes[0];
+            },
+            // When the wait object becomes defined, go ahead and show a view
+            _waitObjectIsReady: function (o) {
+                this._init();
             },
             /* Call this method to display the required child. For example:
             *  `this.$.myrouter.navigate("#pagetwo");`
@@ -88,77 +94,61 @@ Example:
             },
 
             selectNext: function (hash = null) {
-                if(hash == null) hash = this.hash;
+                if (hash == null) hash = this.hash;
 
-                hash = hash == null ? null: hash[0] === '#'? hash : '#'+hash;
-                var currentElement = this.queryEffectiveChildren(hash);
-                if (typeof (currentElement.onRouterLeave) === "function") {
-                    currentElement.onRouterLeave();
-                }
+                hash = hash == null ? null: hash[0] === "#" ? hash : "#" + hash;
+
                 var index = this._hashes.indexOf(hash) + 1;
                 if (index == this._hashes.length) return false;
                 var newHash = this._hashes[index];
 
                 var ele = this.queryEffectiveChildren(newHash);
-                if(ele == null) return false;
-                if(this.testElementsOnShouldShow(ele))
-                {
+                if (ele == null) return false;
+                if (this.testElementsOnShouldShow(ele)) {
                     window.location = newHash;
                     window.scrollTo(0, 0);
                     this.fire("xenon-scroll-top");
                     return true;
-                }
-                else
-                {
+                } else {
                     return this.selectNext(newHash);
                 }
-
             },
             selectPrevious: function (hash = null) {
-                if(hash == null) hash = this.hash;
-                hash = hash == null ? null: hash[0] === '#'? hash : '#'+hash;
-                var currentElement = this.queryEffectiveChildren(hash);
-                if (typeof (currentElement.onRouterLeave) === "function") {
-                    currentElement.onRouterLeave();
-                }
+                if (hash == null) hash = this.hash;
+                hash = hash == null ? null: hash[0] === "#" ? hash : "#" + hash;
+
                 var index = this._hashes.indexOf(hash) - 1;
                 if (index < 0) return false;
                 var newHash = this._hashes[index];
-                
+
                 let ele = this.queryEffectiveChildren(newHash);
-                if(ele == null) return false;
-                if(this.testElementsOnShouldShow(ele))
-                {
+                if (ele == null) return false;
+                if (this.testElementsOnShouldShow(ele)) {
                     window.location = newHash;
                     window.scrollTo(0, 0);
                     this.fire("xenon-scroll-top");
                     return true;
-                }
-                else
-                {
+                } else {
                     return this.selectPrevious(newHash);
                 }
-
             },
             /* Show the correct child based on the value of this.hash */
             _showChild: function (hash, oldHash) {
-               // this.set("lastHash", oldHash);
-                if(hash == null) 
-                { 
-                    this.set('hash', this._hashes[0]);
+                if (hash == null) {
+                    this.set("hash", this._hashes[0]);
                     return;
                 }
                 var all = this.getEffectiveChildren();
-                if (!this.debug) for (var i = 0; i < all.length; i++) {
-                    all[i].hidden = true;
+                if (!this.debug) {
+                    for (var i = 0; i < all.length; i++) {
+                        all[i].hidden = true;
+                    }
                 }
                 // find the element to unhide
                 var ele;
-                if (this.hash == '') 
-                {
+                if (this.hash == "") {
                     ele = all[0];
-                } else 
-                {
+                } else {
                     ele = this.queryEffectiveChildren(this.hash);
                 }
 
@@ -166,16 +156,18 @@ Example:
                 // unhide the element
                 if (ele != undefined) {
                     var shouldShow = this.testElementsOnShouldShow(ele);
-  
-                    if (diff > 0 && !shouldShow) 
-                    {
+
+                    if (diff > 0 && !shouldShow) {
                         this.selectNext();
-                    }
-                    else  
-                    {
+                    } else {
+                        if (oldHash) {
+                            var currentElement = this.queryEffectiveChildren(oldHash);
+                            if (currentElement && typeof (currentElement.onRouterLeave) === "function") {
+                                currentElement.onRouterLeave();
+                            }
+                        }
                         ele.hidden = false;
-                        if (typeof (ele.onRouterShow) === "function")
-                        {
+                        if (typeof (ele.onRouterShow) === "function") {
                             ele.onRouterShow();
                         }
                         this.fire("route", hash);
@@ -186,15 +178,11 @@ Example:
             },
 
 
-            testElementsOnShouldShow: function(element)
-            {
-                if(element == null) return false;
-                if (typeof (element.onShouldShow) === "function") 
-                {
+            testElementsOnShouldShow: function (element) {
+                if (element == null) return false;
+                if (typeof (element.onShouldShow) === "function") {
                     return element.onShouldShow();
-                }
-                else
-                {
+                } else {
                     return true;
                 }
             }
